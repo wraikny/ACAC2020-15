@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <ItemGroup>
-        <!-- <PackageReference Include="LiteNetLib" Version="0.9.3.2" /> -->
         <PackageReference Include="MessagePack" Version="2.2.60" />
+        <PackageReference Include="MessagePackAnalyzer" Version="2.2.60" />
     </ItemGroup>
     
     <ItemGroup>

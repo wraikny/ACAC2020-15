@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading;
+using MessagePack;
+using LiteNetLib;
 
 namespace ACAC2020_15.Server
 {
@@ -6,7 +9,18 @@ namespace ACAC2020_15.Server
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            MessagePackSerializer.DefaultOptions = Shared.Utils.MessagePackOption;
+
+            var config = Config.Load(@"netconfig/serverconfig.json");
+            var server = new Server(config);
+            server.Start();
+            Console.WriteLine($"The server started as port {config.Port}");
+
+            while (true)
+            {
+                Thread.Sleep(Shared.Setting.UpdateTime);
+                server.Update();
+            }
         }
     }
 }

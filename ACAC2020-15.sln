@@ -1,13 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{44405E5F-FFA6-4149-8E18-23719E163AE3}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\Shared.targets = src\Shared\Shared.targets
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACAC2020_15.Client", "src\ACAC2020_15.Client\ACAC2020_15.Client.csproj", "{9375B67B-B7A1-485D-83E5-7EBC2C1B0A28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACAC2020_15.Client", "src\ACAC2020_15.Client\ACAC2020_15.Client.csproj", "{9375B67B-B7A1-485D-83E5-7EBC2C1B0A28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACAC2020_15.Server", "src\ACAC2020_15.Server\ACAC2020_15.Server.csproj", "{5E32FAAD-F989-4569-AAAF-B633C38D3ACC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACAC2020_15.Server", "src\ACAC2020_15.Server\ACAC2020_15.Server.csproj", "{5E32FAAD-F989-4569-AAAF-B633C38D3ACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9375B67B-B7A1-485D-83E5-7EBC2C1B0A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -47,8 +47,14 @@ Global
 		{5E32FAAD-F989-4569-AAAF-B633C38D3ACC}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E32FAAD-F989-4569-AAAF-B633C38D3ACC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9375B67B-B7A1-485D-83E5-7EBC2C1B0A28} = {44405E5F-FFA6-4149-8E18-23719E163AE3}
 		{5E32FAAD-F989-4569-AAAF-B633C38D3ACC} = {44405E5F-FFA6-4149-8E18-23719E163AE3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF7269E5-B5D2-44D1-B131-43EBCDFD9827}
 	EndGlobalSection
 EndGlobal

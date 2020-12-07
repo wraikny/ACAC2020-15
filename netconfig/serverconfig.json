@@ -1,0 +1,4 @@
+{
+    "Port": 8080,
+    "MaxClientCount": 16
+}
