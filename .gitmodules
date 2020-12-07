@@ -1,0 +1,7 @@
+[submodule "lib/LiteNetLib"]
+	path = lib/LiteNetLib
+	url = https://github.com/RevenantX/LiteNetLib.git
+[submodule "lib/MessagePack.Altseed2"]
+	path = lib/MessagePack.Altseed2
+	url = https://github.com/wraikny/MessagePack.Altseed2.git
+	branch = local-altseed2
