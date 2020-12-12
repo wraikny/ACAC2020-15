@@ -3,13 +3,15 @@ using System.Threading;
 using MessagePack;
 using LiteNetLib;
 
+using ACAC2020_15.Shared;
+
 namespace ACAC2020_15.Server
 {
     class Program
     {
         static void Main(string[] args)
         {
-            MessagePackSerializer.DefaultOptions = Shared.Utils.MessagePackOption;
+            MessagePackSerializer.DefaultOptions = Utils.MessagePackOption;
 
             var config = Config.Load(@"netconfig/serverconfig.json");
             var server = new Server(config);
@@ -18,7 +20,7 @@ namespace ACAC2020_15.Server
 
             while (true)
             {
-                Thread.Sleep(Shared.Setting.UpdateTime);
+                Thread.Sleep(Setting.UpdateTime);
                 server.Update();
             }
         }

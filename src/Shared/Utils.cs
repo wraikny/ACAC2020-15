@@ -2,6 +2,8 @@ using System.IO;
 using System.Text;
 using System.Runtime.Serialization.Json;
 using MessagePack;
+using MessagePack.Resolvers;
+using MessagePack.Altseed2;
 
 namespace ACAC2020_15.Shared
 {
@@ -21,9 +23,16 @@ namespace ACAC2020_15.Shared
             return (float)ms / 1000.0f;
         }
 
-        public static MessagePackSerializerOptions MessagePackOption =>
-            MessagePackSerializerOptions.Standard
-                .WithSecurity(MessagePackSecurity.UntrustedData)
-                .WithCompression(MessagePackCompression.Lz4BlockArray);
+        public static MessagePackSerializerOptions MessagePackOption
+        {
+            get
+            {
+                var resolver = CompositeResolver.Create(Altseed2Resolver.Instance, StandardResolver.Instance);
+                return MessagePackSerializerOptions.Standard
+                    .WithResolver(resolver)
+                    .WithSecurity(MessagePackSecurity.UntrustedData)
+                    .WithCompression(MessagePackCompression.Lz4BlockArray);
+            }
+        }
     }
 }

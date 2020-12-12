@@ -5,26 +5,29 @@ using System.Net;
 using LiteNetLib;
 using MessagePack;
 
+using ACAC2020_15.Shared;
+
 namespace ACAC2020_15.Server
 {
     sealed class Server : INetEventListener
     {
         private ulong netxtClientId = 0;
-
         private readonly Config config;
-
         // Key: NetPeer's id, Value: Client
         private readonly Dictionary<int, Client> clients;
-
         private readonly Stopwatch stopwatch;
-
         private NetManager manager;
+
+        private GameState gameState;
+
 
         public Server(Config config)
         {
             this.config = config;
             clients = new Dictionary<int, Client>();
             stopwatch = new Stopwatch();
+
+            gameState = new GameState();
         }
 
         private ulong NewClientId()
@@ -37,7 +40,7 @@ namespace ACAC2020_15.Server
         public void Start()
         {
             manager = new NetManager(this);
-            Shared.Setting.SettingNetManagerServer(manager);
+            Setting.SettingNetManagerServer(manager);
 
             if (!manager.Start(config.Port))
             {
@@ -55,9 +58,25 @@ namespace ACAC2020_15.Server
             {
                 stopwatch.Stop();
 
-                var deltaSeond = Shared.Utils.MsToSec((int)stopwatch.ElapsedMilliseconds);
+                var _ = Utils.MsToSec((int)stopwatch.ElapsedMilliseconds);
 
                 // 更新
+
+                // 処理があるならする
+
+
+                if (gameState.IsUpdated)
+                {
+                    // 送信
+                    var msg = new IServerMsg.SyncGameState(gameState);
+                    var data = MessagePackSerializer.Serialize<IServerMsg>(msg);
+                    foreach(var client in clients.Values)
+                    {
+                        client.Peer.Send(data, DeliveryMethod.ReliableOrdered);
+                    }
+
+                    gameState.Serialized();
+                }
             }
 
             stopwatch.Start();
@@ -67,7 +86,7 @@ namespace ACAC2020_15.Server
         {
             if (manager.ConnectedPeersCount < config.MaxClientCount)
             {
-                request.AcceptIfKey(Shared.Setting.ConnectionKey);
+                request.AcceptIfKey(Setting.ConnectionKey);
             }
             else
             {
@@ -90,10 +109,21 @@ namespace ACAC2020_15.Server
         {
             var client = clients[peer.Id];
 
+            Console.WriteLine($"Message received from client({client.Id})");
+
             // 処理
             try
             {
                 var message = MessagePackSerializer.Deserialize<Shared.IClientMsg>(reader.GetRemainingBytesSegment());
+
+                switch (message)
+                {
+                    case IClientMsg.Move m:
+                        gameState.PlayerMove(client.Id, m.Direction);
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (MessagePackSerializationException e)
             {
@@ -112,12 +142,14 @@ namespace ACAC2020_15.Server
         void INetEventListener.OnPeerConnected(NetPeer peer)
         {
             var clientId = NewClientId();
-            // peer.Send(new InitData(clientId), DeliveryMethod.ReliableOrdered);
+            peer.Send(MessagePackSerializer.Serialize<IServerMsg>(new IServerMsg.ClientId(clientId)), DeliveryMethod.ReliableOrdered);
 
             var client = new Client(clientId, peer);
             clients.Add(peer.Id, client);
 
-            Console.WriteLine($"New client{clientId} is connected.");
+            Console.WriteLine($"New client({clientId}) is connected.");
+
+            gameState.PlayerEnter(clientId);
         }
 
         void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
@@ -128,6 +160,8 @@ namespace ACAC2020_15.Server
             clients.Remove(peer.Id);
 
             Console.WriteLine($"Client({clientId}) is disconnected.");
+
+            gameState.PlayerExit(clientId);
         }
     }
 }

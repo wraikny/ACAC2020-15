@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LiteNetLib;
+using MessagePack;
+
+using ACAC2020_15.Shared;
 
 namespace ACAC2020_15.Server
 {
     sealed class Client
     {
-        private Shared.AveragedLatency latency;
+        private readonly AveragedLatency latency;
 
         public UInt64 Id { get; private set; }
         public NetPeer Peer { get; private set; }
@@ -20,7 +23,7 @@ namespace ACAC2020_15.Server
             Id = id;
             Peer = peer;
             
-            latency = new Shared.AveragedLatency();
+            latency = new AveragedLatency();
         }
 
         public void UpdateLatency(int latencyMs)

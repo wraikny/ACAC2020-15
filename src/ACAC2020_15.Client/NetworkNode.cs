@@ -1,34 +1,42 @@
 using System;
 using System.Threading.Tasks;
 using System.Net;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using LiteNetLib;
 using MessagePack;
 using Altseed2;
 
+using ACAC2020_15.Shared;
+
 namespace ACAC2020_15.Client
 {
     sealed class NetworkNode : Node, INetEventListener
     {
-        NetManager manager;
-        NetPeer peer;
-        readonly Shared.AveragedLatency latency;
+        private ulong? id;
+        private NetManager manager;
+        private readonly AveragedLatency latency;
 
+        public ulong? Id => id;
         public bool IsRunning => manager?.IsRunning ?? false;
+
+        public NetPeer Peer { get; private set; }
+
+        public event Action<GameState> OnReceiveGameState;
 
         public NetworkNode()
         {
-            latency = new Shared.AveragedLatency();
+            latency = new AveragedLatency();
         }
 
-        public async ValueTask Start()
+        public async Task Start()
         {
-            if (manager?.IsRunning ?? true) return;
+            if (manager?.IsRunning ?? false) return;
 
             var config = await Config.Load(@"netconfig/clientconfig.json");
 
             manager = new NetManager(this);
-            Shared.Setting.SettingNetManagerClient(manager);
+            Setting.SettingNetManagerClient(manager);
 
             if (!manager.Start())
             {
@@ -36,7 +44,7 @@ namespace ACAC2020_15.Client
             }
 
             // サーバーへ接続する
-            manager.Connect(config.Address, config.Port, Shared.Setting.ConnectionKey);
+            manager.Connect(config.Address, config.Port, Setting.ConnectionKey);
         }
 
         protected override void OnUpdate()
@@ -44,8 +52,6 @@ namespace ACAC2020_15.Client
             if (manager != null)
             {
                 manager?.PollEvents();
-
-                // 送信
             }
         }
 
@@ -53,7 +59,8 @@ namespace ACAC2020_15.Client
 
         void INetEventListener.OnPeerConnected(NetPeer peer)
         {
-            this.peer = peer;
+            Peer = peer;
+            Console.WriteLine("Connected to the server");
         }
 
         void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
@@ -63,16 +70,25 @@ namespace ACAC2020_15.Client
 
         void INetEventListener.OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
+            Console.WriteLine("Message received");
+
             // 処理
-            try
-            {
-                var message = MessagePackSerializer.Deserialize<Shared.IServerMsg>(reader.GetRemainingBytesSegment());
+            var message = MessagePackSerializer.Deserialize<IServerMsg>(reader.GetRemainingBytesSegment());
 
-                // 処理
-            }
-            catch(MessagePackSerializationException e)
+            switch (message)
             {
-
+                case IServerMsg.ClientId m:
+                    if (id is null)
+                    {
+                        id = m.Id;
+                    }
+                    break;
+                case IServerMsg.SyncGameState m:
+                    OnReceiveGameState?.Invoke(m.GameState);
+                    break;
+                default:
+                    Console.WriteLine("Unexpected message");
+                    break;
             }
 
             reader.Recycle();

@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <Compile Include="../Shared/**/*.cs"  LinkBase="Shared" />
+      <Compile Include="../Shared/**/*.cs" LinkBase="Shared" />
   </ItemGroup>
 
   <Import Project="../Shared/Shared.targets" />

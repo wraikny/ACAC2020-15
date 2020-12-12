@@ -7,9 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <Compile Include="../Shared/**/*.cs" LinkBase="Shared"/>
+      <Compile Include="../Shared/**/*.cs" LinkBase="Shared" />
   </ItemGroup>
 
   <Import Project="../Shared/Shared.targets" />
+
+  <ItemGroup>
+    <Reference Include="../../lib/Altseed2/Altseed2.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\MessagePack.Altseed2\src\MessagePack.Altseed2\MessagePack.Altseed2.csproj" />
+  </ItemGroup>
 
 </Project>

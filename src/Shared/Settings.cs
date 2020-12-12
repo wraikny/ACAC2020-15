@@ -1,12 +1,12 @@
 using LiteNetLib;
+using Altseed2;
 
 namespace ACAC2020_15.Shared
 {
     static class Setting
     {
         public const string ConnectionKey = "SomeKey";
-
-        public const int UpdateTime = 50;
+        public const int UpdateTime = 20;
 
         static void SettingNetManager(NetManager manager)
         {
