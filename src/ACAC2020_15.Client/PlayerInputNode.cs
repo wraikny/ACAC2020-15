@@ -6,22 +6,12 @@ using ACAC2020_15.Shared;
 
 namespace ACAC2020_15.Client
 {
-    class SelfPlayerNode : Node
+    class PlayerInputNode : Node
     {
-        private readonly GamePlayer player;
+        public event Action<IPlayerAction> OnPlayerInput;
 
-        // private readonly PlayerViewNode viewNode;
-
-        public event Action<Direction> OnMove;
-
-        public SelfPlayerNode()
+        public PlayerInputNode()
         {
-            // viewNode = new PlayerViewNode();
-            // AddChildNode(viewNode);
-
-            player = GamePlayer.CreateDefault();
-
-            // viewNode.Update(player.Direction, player.Position);
         }
 
         static bool IsPush(Key key)
@@ -47,13 +37,19 @@ namespace ACAC2020_15.Client
             {
                 Move(Direction.Left);
             }
+            else if (IsPush(Key.Z))
+            {
+                OnPlayerInput?.Invoke(IPlayerAction.CreateBlock.Instance);
+            }
+            else if (IsPush(Key.X))
+            {
+                OnPlayerInput?.Invoke(IPlayerAction.BreakBlock.Instance);
+            }
         }
 
         public void Move(Direction direction)
         {
-            player.Move(direction);
-            OnMove?.Invoke(direction);
-            // viewNode.Update(player.Direction, player.Position);
+            OnPlayerInput?.Invoke(new IPlayerAction.Move(direction));
         }
     }
 }

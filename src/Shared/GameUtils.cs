@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Altseed2;
 
 namespace ACAC2020_15.Shared
@@ -14,6 +15,24 @@ namespace ACAC2020_15.Shared
         public static bool ValidatePosition(Vector2I position)
         {
             return 0 <= position.X && position.X < AreaSize.X && 0 <= position.Y && position.Y < AreaSize.Y;
+        }
+
+        public static readonly IReadOnlyList<Vector2I> AllCells;
+
+        static GameUtils()
+        {
+            var cells = new List<Vector2I>(AreaSize.X * AreaSize.Y);
+
+            for (int y = 0; y < AreaSize.Y; y++)
+            {
+                for (int x = 0; x < AreaSize.X; x++)
+                {
+                    cells.Add(new Vector2I(x, y));
+                }
+            }
+
+            AllCells = cells;
+
         }
     }
 }

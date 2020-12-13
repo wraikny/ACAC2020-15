@@ -13,6 +13,8 @@ namespace ACAC2020_15.Shared
         {
             [Key(0)]
             public ulong Id { get; private set; }
+
+            [SerializationConstructor]
             public ClientId(ulong id)
             {
                 Id = id;
@@ -25,6 +27,7 @@ namespace ACAC2020_15.Shared
             [Key(0)]
             public GameState GameState { get; private set; }
 
+            [SerializationConstructor]
             public SyncGameState(GameState state)
             {
                 GameState = state;

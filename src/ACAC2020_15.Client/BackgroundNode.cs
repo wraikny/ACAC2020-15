@@ -14,21 +14,18 @@ namespace ACAC2020_15.Client
 
             var size = GameUtils.CellSize * 0.9f;
 
-            for (int y = 0; y < count.Y; y++)
+            foreach (var v in GameUtils.AllCells)
             {
-                for (int x = 0; x < count.X; x++)
+                var node = new RectangleNode
                 {
-                    var node = new RectangleNode
-                    {
-                        Position = new Vector2F(x + 0.5f, y + 0.5f) * GameUtils.CellSize,
-                        CenterPosition = size * 0.5f,
-                        RectangleSize = size,
-                        ZOrder = ZOrders.Background,
-                        Color = new Color(20, 20, 20),
-                    };
+                    Position = new Vector2F(v.X + 0.5f, v.Y + 0.5f) * GameUtils.CellSize,
+                    CenterPosition = size * 0.5f,
+                    RectangleSize = size,
+                    ZOrder = ZOrders.Background,
+                    Color = new Color(20, 20, 20),
+                };
 
-                    AddChildNode(node);
-                }
+                AddChildNode(node);
             }
         }
     }

@@ -3,18 +3,19 @@ using MessagePack;
 
 namespace ACAC2020_15.Shared
 {
-    [MessagePack.Union(0, typeof(Move))]
+    [MessagePack.Union(0, typeof(PlayerAction))]
     public interface IClientMsg
     {
         [MessagePackObject]
-        public sealed class Move : IClientMsg
+        public sealed class PlayerAction : IClientMsg
         {
             [Key(0)]
-            public Direction Direction { get; set; }
+            public IPlayerAction Value { get; private set; }
 
-            public Move(Direction direction)
+            [SerializationConstructor]
+            public PlayerAction(IPlayerAction value)
             {
-                Direction = direction;
+                Value = value;
             }
         }
     }

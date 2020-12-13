@@ -58,12 +58,10 @@ namespace ACAC2020_15.Server
             {
                 stopwatch.Stop();
 
-                var _ = Utils.MsToSec((int)stopwatch.ElapsedMilliseconds);
+                var deltaSecond = Utils.MsToSec((int)stopwatch.ElapsedMilliseconds);
 
                 // 更新
-
-                // 処理があるならする
-
+                gameState.Update(deltaSecond);
 
                 if (gameState.IsUpdated)
                 {
@@ -118,8 +116,8 @@ namespace ACAC2020_15.Server
 
                 switch (message)
                 {
-                    case IClientMsg.Move m:
-                        gameState.PlayerMove(client.Id, m.Direction);
+                    case IClientMsg.PlayerAction m:
+                        gameState.PlayerACtion(client.Id, m.Value);
                         break;
                     default:
                         break;

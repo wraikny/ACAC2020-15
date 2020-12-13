@@ -25,12 +25,12 @@ namespace ACAC2020_15.Client
             var networkNode = new NetworkNode();
             Engine.AddNode(networkNode);
 
-            var selfPlayer = new SelfPlayerNode();
+            var selfPlayer = new PlayerInputNode();
 
-            selfPlayer.OnMove += (dir) => {
+            selfPlayer.OnPlayerInput += (action) => {
                 if (networkNode.Peer is NetPeer peer)
                 {
-                    var msg = new IClientMsg.Move(dir);
+                    var msg = new IClientMsg.PlayerAction(action);
                     var data = MessagePackSerializer.Serialize<IClientMsg>(msg);
                     peer.Send(data, DeliveryMethod.ReliableOrdered);
                     Console.WriteLine("Send: Move");
@@ -42,8 +42,13 @@ namespace ACAC2020_15.Client
 
             var otherPlayerNodes = new Dictionary<ulong, OtherPlayerNode>();
 
+            var blockNodes = new Dictionary<ulong, BlockViewNode>();
+
             networkNode.OnReceiveGameState += (state) => {
                 var selfId = networkNode.Id.Value;
+
+                /* Players */
+
                 foreach (var x in state.Players)
                 {
                     if (x.Key == selfId)
@@ -67,6 +72,25 @@ namespace ACAC2020_15.Client
                 {
                     otherPlayerNodes.Remove(id, out OtherPlayerNode player);
                     Engine.RemoveNode(player);
+                }
+
+                /* Blocks */
+                foreach (var x in state.Blocks)
+                {
+                    var blockId = x.Key;
+                    if (!blockNodes.TryGetValue(blockId, out BlockViewNode blockNode))
+                    {
+                        Console.WriteLine($"New block({blockId}) is created");
+                        blockNode = new BlockViewNode(x.Value.Position);
+                        blockNodes.Add(blockId, blockNode);
+                        Engine.AddNode(blockNode);
+                    }
+                }
+
+                foreach (var blockId in blockNodes.Keys.Where(id => !state.Blocks.ContainsKey(id)).ToArray())
+                {
+                    blockNodes.Remove(blockId, out BlockViewNode block);
+                    Engine.RemoveNode(block);
                 }
             };
 
