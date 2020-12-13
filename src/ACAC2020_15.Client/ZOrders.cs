@@ -8,5 +8,6 @@ namespace ACAC2020_15.Client
     {
         public const int Background = 0;
         public const int Player = 100;
+        public const int Block = 110;
     }
 }

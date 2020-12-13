@@ -22,6 +22,8 @@ namespace ACAC2020_15.Client
             Position = position.To2F() * GameUtils.CellSize + GameUtils.CellSize * 0.5f;
 
             Color = new Color(200, 80, 80);
+
+            ZOrder = ZOrders.Block;
         }
     }
 }
