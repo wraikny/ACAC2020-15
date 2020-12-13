@@ -7,7 +7,7 @@ using ACAC2020_15.Shared;
 
 namespace ACAC2020_15.Client
 {
-    class OtherPlayerNode : TransformNode
+    class OtherPlayerNode : Node
     {
         private readonly PlayerViewNode viewNode;
 
@@ -19,7 +19,7 @@ namespace ACAC2020_15.Client
 
         public void Update(GamePlayer player)
         {
-            viewNode.Update(player.Direction, player.Position);
+            viewNode.Update(player);
         }
     }
 }

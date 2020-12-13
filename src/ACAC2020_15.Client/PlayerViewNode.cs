@@ -23,5 +23,10 @@ namespace ACAC2020_15.Client
             Angle = direction.ToDegree();
             Position = position.To2F() * GameUtils.CellSize + GameUtils.CellSize * 0.5f;
         }
+
+        public void Update(GamePlayer player)
+        {
+            Update(player.Direction, player.Position);
+        }
     }
 }

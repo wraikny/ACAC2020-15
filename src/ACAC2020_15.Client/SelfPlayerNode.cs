@@ -6,22 +6,22 @@ using ACAC2020_15.Shared;
 
 namespace ACAC2020_15.Client
 {
-    class SelfPlayerNode : TransformNode
+    class SelfPlayerNode : Node
     {
         private readonly GamePlayer player;
 
-        private readonly PlayerViewNode viewNode;
+        // private readonly PlayerViewNode viewNode;
 
         public event Action<Direction> OnMove;
 
         public SelfPlayerNode()
         {
-            viewNode = new PlayerViewNode();
-            AddChildNode(viewNode);
+            // viewNode = new PlayerViewNode();
+            // AddChildNode(viewNode);
 
             player = GamePlayer.CreateDefault();
 
-            viewNode.Update(player.Direction, player.Position);
+            // viewNode.Update(player.Direction, player.Position);
         }
 
         static bool IsPush(Key key)
@@ -53,7 +53,7 @@ namespace ACAC2020_15.Client
         {
             player.Move(direction);
             OnMove?.Invoke(direction);
-            viewNode.Update(player.Direction, player.Position);
+            // viewNode.Update(player.Direction, player.Position);
         }
     }
 }

@@ -37,13 +37,20 @@ namespace ACAC2020_15.Client
                 }
             };
 
+            var selfPlayerViewNode = new PlayerViewNode();
+            Engine.AddNode(selfPlayerViewNode);
+
             var otherPlayerNodes = new Dictionary<ulong, OtherPlayerNode>();
 
             networkNode.OnReceiveGameState += (state) => {
                 var selfId = networkNode.Id.Value;
                 foreach (var x in state.Players)
                 {
-                    if (x.Key == selfId) continue;
+                    if (x.Key == selfId)
+                    {
+                        selfPlayerViewNode.Update(x.Value);
+                        continue;
+                    }
 
                     if (!otherPlayerNodes.TryGetValue(x.Key, out OtherPlayerNode player))
                     {
