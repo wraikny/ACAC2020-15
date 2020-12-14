@@ -32,8 +32,10 @@ Target.create "CopyLib" (fun _ ->
     )
 )
 
-let publishProject projectName ext runtime =
-  let outputPath = sprintf "publish/%s.%s" projectName runtime
+let getOutputPath projectName runtime = sprintf "publish/%s.%s" projectName runtime
+
+let publishProject ext projectName runtime =
+  let outputPath = getOutputPath projectName runtime
 
   sprintf "src/%s/%s.%s" projectName projectName ext
   |> DotNet.publish (fun p ->
@@ -59,12 +61,24 @@ let publishProject projectName ext runtime =
   |> Zip.zip "publish" (sprintf "%s.zip" outputPath)
 
 
-let publishCsproj projectName runtime = publishProject projectName "csproj" runtime
+let publishCsproj projectName runtime = publishProject "csproj" projectName runtime
+
+
+let copyFile targetDir targetFilename filePath =
+  Directory.ensure targetDir
+
+  Shell.copyFile (sprintf "%s/%s" targetDir targetFilename) filePath
 
 
 Target.create "PublishServer" (fun _ ->
     let projectName = "ACAC2020_15.Server"
     let runtime = "linux-x64"
+
+    let outputPath = getOutputPath projectName runtime
+
+    "netconfig/serverconfig.json"
+    |> copyFile (sprintf "%s/netconfig/" outputPath) "serverconfig.json"
+
     publishCsproj projectName runtime
 )
 
@@ -72,10 +86,22 @@ Target.create "PublishClient" (fun _ ->
     let projectName = "ACAC2020_15.Client"
     let runtimes = [ "win-x64"; "osx-x64" ]
 
-    runtimes |> Seq.iter (publishCsproj projectName)
+    runtimes |> Seq.iter (fun runtime ->
+      let outputPath = getOutputPath projectName runtime
+
+      "netconfig/clientconfig.json"
+      |> copyFile (sprintf "%s/netconfig/" outputPath) "clientconfig.json"
+
+      publishCsproj projectName runtime
+    )
 )
 
+Target.create "Publish" ignore
+
 Target.create "All" ignore
+
+"PublishServer" ==> "Publish"
+"PublishClient" ==> "Publish"
 
 "Clean"
   ==> "Build"

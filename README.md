@@ -5,7 +5,7 @@
 ### Setup
 
 ```shell
-git submodule update
+git submodule update --init
 ```
 
 [Altseed2 05f5a06467a944aef3307dbb2e7c05c754f718ab](https://github.com/altseed/Altseed2-csharp/runs/1502649908)
@@ -22,8 +22,8 @@ fake build -t copylib
 dotnet build
 ```
 
-### Publish Server
+### Publish
 
 ```shell
-fake build -t publishserver
+fake build -t publish
 ```
