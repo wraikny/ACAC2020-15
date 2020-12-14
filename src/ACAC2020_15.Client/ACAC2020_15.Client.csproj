@@ -17,38 +17,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <Compile Include="../Shared/**/*.cs" LinkBase="Shared" />
+      <Compile Include="..\Shared\**\*.cs" LinkBase="Shared" />
   </ItemGroup>
 
-  <Import Project="../Shared/Shared.targets" />
+  <Import Project="..\Shared\Shared.targets" />
 
   <ItemGroup Condition="(('$(OS)'=='Windows' Or '$(OS)'=='Windows_NT') And '$(RuntimeIdentifier)'=='') Or '$(RuntimeIdentifier)'=='win-x64'">
-    <None Include="../../lib/Altseed2/Altseed2_Core.dll">
+    <None Include="..\..\lib\Altseed2\Altseed2_Core.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup Condition=" ($([MSBuild]::IsOsPlatform('OSX'))  And '$(RuntimeIdentifier)'=='') Or '$(RuntimeIdentifier)'=='osx-x64' ">
-    <None Include="../../lib/Altseed2/libAltseed2_Core.dylib">
+    <None Include="..\..\lib\Altseed2\libAltseed2_Core.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup Condition=" ($([MSBuild]::IsOsPlatform('Linux'))  And '$(RuntimeIdentifier)'=='') Or '$(RuntimeIdentifier)'=='linux-x64' ">
-    <None Include="../../lib/Altseed2/libAltseed2_Core">
+    <None Include="..\..\lib\Altseed2\libAltseed2_Core">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="../../lib/Altseed2/Altseed2.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\lib\MessagePack.Altseed2\src\MessagePack.Altseed2\MessagePack.Altseed2.csproj" />
-  </ItemGroup>
-
 </Project>

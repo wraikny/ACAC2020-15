@@ -3,8 +3,13 @@
         <PackageReference Include="MessagePack" Version="2.2.60" />
         <PackageReference Include="MessagePackAnalyzer" Version="2.2.60" />
     </ItemGroup>
+
+    <ItemGroup>
+    <Reference Include="..\..\lib\Altseed2\Altseed2.dll" />
+  </ItemGroup>
     
     <ItemGroup>
-        <ProjectReference Include="../../lib/LiteNetLib/LiteNetLib/LiteNetLib.csproj" />
+        <ProjectReference Include="..\..\lib\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
+        <ProjectReference Include="..\..\lib\MessagePack.Altseed2\src\MessagePack.Altseed2\MessagePack.Altseed2.csproj" />
     </ItemGroup>
 </Project>
