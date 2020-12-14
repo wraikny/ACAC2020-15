@@ -1,7 +1,8 @@
 #r "paket:
 nuget Fake.DotNet.Cli
 nuget Fake.IO.FileSystem
-nuget Fake.Core.Target //"
+nuget Fake.Core.Target
+nuget FAKE.IO.Zip //"
 #load ".fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
@@ -32,6 +33,8 @@ Target.create "CopyLib" (fun _ ->
 )
 
 let publishProject projectName ext runtime =
+  let outputPath = sprintf "publish/%s.%s" projectName runtime
+
   sprintf "src/%s/%s.%s" projectName projectName ext
   |> DotNet.publish (fun p ->
     { p with
@@ -45,11 +48,19 @@ let publishProject projectName ext runtime =
               :: ("PublishTrimmed", "true")
               :: p.MSBuildParams.Properties
         }
-        OutputPath = sprintf "publish/%s.%s" projectName runtime |> Some
+        OutputPath = outputPath |> Some
     }
   )
 
+  "LICENSE_publish.txt"
+  |> Shell.copyFile (sprintf "%s/LICENSE.txt" outputPath)
+
+  !! (sprintf "%s/**" outputPath)
+  |> Zip.zip "publish" (sprintf "%s.zip" outputPath)
+
+
 let publishCsproj projectName runtime = publishProject projectName "csproj" runtime
+
 
 Target.create "PublishServer" (fun _ ->
     let projectName = "ACAC2020_15.Server"
