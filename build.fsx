@@ -31,25 +31,37 @@ Target.create "CopyLib" (fun _ ->
     )
 )
 
+let publishProject projectName ext runtime =
+  sprintf "src/%s/%s.%s" projectName projectName ext
+  |> DotNet.publish (fun p ->
+    { p with
+        Runtime = Some runtime
+        Configuration = DotNet.BuildConfiguration.Release
+        SelfContained = Some true
+        MSBuildParams = {
+          p.MSBuildParams with
+            Properties =
+              ("PublishSingleFile", "true")
+              :: ("PublishTrimmed", "true")
+              :: p.MSBuildParams.Properties
+        }
+        OutputPath = sprintf "publish/%s.%s" projectName runtime |> Some
+    }
+  )
+
+let publishCsproj projectName runtime = publishProject projectName "csproj" runtime
+
 Target.create "PublishServer" (fun _ ->
     let projectName = "ACAC2020_15.Server"
+    let runtime = "linux-x64"
+    publishCsproj projectName runtime
+)
 
-    sprintf "src/%s/%s.csproj" projectName projectName
-    |> DotNet.publish (fun p ->
-      { p with
-          Runtime = Some "linux-x64"
-          Configuration = DotNet.BuildConfiguration.Release
-          SelfContained = Some true
-          MSBuildParams = {
-            p.MSBuildParams with
-              Properties =
-                ("PublishSingleFile", "true")
-                :: ("PublishTrimmed", "true")
-                :: p.MSBuildParams.Properties
-          }
-          OutputPath = sprintf "publish/%s.linux-x64" projectName |> Some
-      }
-    )
+Target.create "PublishClient" (fun _ ->
+    let projectName = "ACAC2020_15.Client"
+    let runtime = "win-x64"
+
+    publishCsproj projectName runtime
 )
 
 Target.create "All" ignore
