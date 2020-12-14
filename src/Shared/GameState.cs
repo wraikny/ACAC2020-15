@@ -92,7 +92,11 @@ namespace ACAC2020_15.Shared
 
         private void Move(GamePlayer player, IPlayerAction.Move move)
         {
-            player.Direction = move.Direction;
+            if (player.Direction != move.Direction)
+            {
+                player.Direction = move.Direction;
+                IsUpdated = true;
+            }
 
             if (player.TryGetForwardCell() is Vector2I p)
             {
