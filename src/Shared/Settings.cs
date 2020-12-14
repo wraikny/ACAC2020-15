@@ -14,7 +14,7 @@ namespace ACAC2020_15.Shared
             manager.SimulationMinLatency = 17;
             manager.SimulationMaxLatency = 19;
 
-            // 秒間20回
+            // 秒間50回
             manager.UpdateTime = UpdateTime;
         }
 
