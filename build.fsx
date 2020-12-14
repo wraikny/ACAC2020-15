@@ -59,9 +59,9 @@ Target.create "PublishServer" (fun _ ->
 
 Target.create "PublishClient" (fun _ ->
     let projectName = "ACAC2020_15.Client"
-    let runtime = "win-x64"
+    let runtimes = [ "win-x64"; "osx-x64" ]
 
-    publishCsproj projectName runtime
+    runtimes |> Seq.iter (publishCsproj projectName)
 )
 
 Target.create "All" ignore
